@@ -1,0 +1,12 @@
+[package]
+name = "base"
+version = "0.1.0"
+authors = ["Charles Tison <ctison@pm.me>"]
+edition = "2018"
+
+[lib]
+name = "lib"
+path = "src/lib.rs"
+
+[dependencies]
+clap = "~2.27.0"
