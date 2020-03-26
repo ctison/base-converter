@@ -3,7 +3,7 @@ extern crate clap;
 use lib::base_to_base;
 
 fn main() {
-  let matches = clap_app!(base_converter =>
+  let matches = clap_app!(base =>
       (version: "1.0.0")
       (about: "Convert numbers from any to any base")
       (@arg NUMBER: +required "Number to be converted from FROM_BASE to TO_BASE")
