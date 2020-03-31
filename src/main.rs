@@ -16,6 +16,6 @@ fn main() {
   let to_base = matches.value_of("TO_BASE").unwrap();
   match base_to_base(number, from_base, to_base) {
     Ok(result) => println!("{}", result),
-    Err(err) => println!("{:?}", err),
+    Err(err) => println!("Error: {}", err),
   }
 }

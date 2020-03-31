@@ -1,3 +1,4 @@
+mod errs;
 use std::error::Error;
 
 pub static BASE2: &str = "01";
@@ -5,20 +6,16 @@ pub static BASE8: &str = "01234567";
 pub static BASE10: &str = "0123456789";
 pub static BASE16: &str = "0123456789ABCDEF";
 
-fn check_base(base: &str) -> Result<(), String> {
+fn check_base(base: &str) -> Result<(), Box<dyn Error>> {
   if base.len() < 2 {
-    return Err(format!(
-      "base length should be at least 2: '{}'.len() -> {}",
-      base,
-      base.len()
-    ));
+    return Err(Box::new(errs::BaseLenTooShort(String::from(base))));
   }
   for c in base.chars() {
     if base.chars().filter(|c2| &c == c2).count() > 1 {
-      return Err(format!(
-        "base must have unique characters: '{}' has multiple '{}'",
-        base, c,
-      ));
+      return Err(Box::new(errs::DuplicateCharInBase {
+        base: String::from(base),
+        c,
+      }));
     }
   }
   Ok(())
@@ -29,19 +26,25 @@ pub fn base_to_decimal(nbr: &str, from_base: &str) -> Result<usize, Box<dyn Erro
   let baselen = from_base.len();
   let mut result: usize = 0;
   for (c, i) in nbr.chars().zip((0..nbr.chars().count() as u32).rev()) {
-    let x = from_base
-      .chars()
-      .position(|x| x == c)
-      .ok_or_else::<String, _>(|| format!("char '{}' not found in base '{}'", c, from_base))?;
+    let x = from_base.chars().position(|x| x == c).ok_or_else(|| {
+      Box::new(errs::CharNotFoundInBase {
+        c,
+        base: String::from(from_base),
+      })
+    })?;
     result += x
       * baselen
         .checked_pow(i)
-        .ok_or_else(|| format!("baselen {} ** {} overflowed", baselen, i))? as usize;
+        .ok_or_else(|| errs::ConversionOverflow {
+          base: String::from(from_base),
+          baselen,
+          power: i,
+        })? as usize;
   }
   Ok(result)
 }
 
-pub fn decimal_to_base(mut x: usize, to_base: &str) -> Result<String, String> {
+pub fn decimal_to_base(mut x: usize, to_base: &str) -> Result<String, Box<dyn Error>> {
   check_base(to_base)?;
   if x == 0 {
     return Ok(String::from("0"));
