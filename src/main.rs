@@ -4,7 +4,7 @@ use lib::base_to_base;
 
 fn main() {
   let matches = clap_app!(base =>
-      (version: "1.0.0")
+      (version: env!("CARGO_PKG_VERSION"))
       (about: "Convert numbers from any base to any other base")
       (@arg NUMBER: +required "Number to be converted from FROM_BASE to TO_BASE")
       (@arg FROM_BASE: +required "Base in which NUMBER is converted from")
