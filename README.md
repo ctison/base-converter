@@ -1,10 +1,14 @@
 # Base converter
 
-A binary to convert a number from any base to any other base.
+Convert a number from any base to any other base from your terminal!
 
 ## Install
 
-You can find compiled binaries from [Releases](https://github.com/ctison/base/releases).
+You can find binaries in [Releases](https://github.com/ctison/base/releases).
+```
+curl -Lo /usr/local/bin/base https://github.com/ctison/base/releases/latest/download/base-linux-amd64
+chmod 500 /usr/local/bin/base
+```
 
 ## Usage
 
