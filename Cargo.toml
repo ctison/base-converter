@@ -9,4 +9,4 @@ name = "lib"
 path = "src/lib.rs"
 
 [dependencies]
-clap = "~2.27.0"
+clap = "=2.27.1"
