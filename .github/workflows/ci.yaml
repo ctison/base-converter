@@ -16,7 +16,7 @@ jobs:
       - name: Checkout the source code
         uses: actions/checkout@v2
       - name: Build
-        uses: docker://rust:1.42.0-buster
+        uses: docker://rust:1.42.0
         with:
           args: /bin/sh -c "cargo test && cargo build --release"
       - name: Create a Release
@@ -28,11 +28,11 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
-          body: ""
+          body: ''
           draft: false
       - name: Upload a Release Asset
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-        uses: actions/upload-release-asset@v1.0.2
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
