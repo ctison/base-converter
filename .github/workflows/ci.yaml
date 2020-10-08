@@ -16,7 +16,7 @@ jobs:
       - name: Checkout the source code
         uses: actions/checkout@v2
       - name: Build
-        uses: docker://rust:1.46.0@sha256:d5b161fdc53260a2b40807d93833d099034bbd6ffae033c72ecb0ad90f871707
+        uses: docker://rust:1.47.0@sha256:35bef9c8e4493bec6e7c003f3ecd762adc894eb5d9c01f9f4fa3d8e37b09a6a3
         with:
           args: /bin/sh -c "cargo test && cargo build --release"
       - name: Create a Release
