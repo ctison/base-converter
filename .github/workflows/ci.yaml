@@ -16,7 +16,7 @@ jobs:
       - name: Checkout the source code
         uses: actions/checkout@1e204e9a9253d643386038d443f96446fa156a97 # renovate: tag=v2
       - name: Build
-        uses: docker://rust:1.56.0@sha256:1153c6fe815a704c0fb7ddfbc73774aa3fead24db88b4c3f6079b5b7a5bc1bdd
+        uses: docker://rust:1.56.0@sha256:67c1808635e9a61a6a9da3659e6ebcf20d341106b0dbec4ac35cedb29fd2b2e0
         with:
           args: /bin/sh -c "cargo test && cargo build --release"
       - name: Create a Release
