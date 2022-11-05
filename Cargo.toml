@@ -5,6 +5,9 @@ authors = ["Charles Tison <ctison@pm.me>"]
 edition = "2021"
 repository = "https://github.com/ctison/base-converter-rs"
 description = "Convert a number in any base to any other base"
+license = "MIT"
+include = ["src/**/*.rs"]
+exclude = ["src/main.rs"]
 
 [dependencies]
 clap = { version = "4.0.19", features = ["derive"] }

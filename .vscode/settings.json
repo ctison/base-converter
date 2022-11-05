@@ -3,5 +3,5 @@
   "editor.tabSize": 2,
   "files.eol": "\n",
   "files.insertFinalNewline": true,
-  "cSpell.words": ["thiserror"]
+  "cSpell.words": ["automerge", "renovatebot", "thiserror"]
 }
