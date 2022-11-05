@@ -1,83 +1,188 @@
-mod errs;
-use std::error::Error;
+//! Convert numbers from base to base.
 
+use anyhow::{ensure, Result};
+use thiserror::Error;
+
+/// 01
 pub static BASE2: &str = "01";
+/// 01234567
 pub static BASE8: &str = "01234567";
+/// 0123456789
 pub static BASE10: &str = "0123456789";
+/// 0123456789ABCDEF
 pub static BASE16: &str = "0123456789ABCDEF";
 
-fn check_base(base: &str) -> Result<(), Box<dyn Error>> {
-  if base.len() < 2 {
-    return Err(Box::new(errs::BaseLenTooShort(String::from(base))));
-  }
+/// Errors that can be returned by [check_base] and any function that takes
+/// a base as argument.
+#[derive(Error, Debug)]
+pub enum CheckBaseError {
+  /// Error occurring when a base length is inferior at 2.
+  #[error("length of base '{0}' must be at least 2")]
+  BaseLenTooShort(String),
+  /// Error occurring when a character appears more than once in a base.
+  #[error("base '{base}' has at least 2 occurrences of char '{c}'")]
+  DuplicateCharInBase { base: String, c: char },
+}
+
+/// Checks if a base is valid.
+///
+/// # Errors
+/// - [CheckBaseError]
+///
+/// # Examples
+/// ```
+/// use base_converter::check_base;
+/// check_base("0123456789").expect("valid hardcoded base");
+/// ```
+/// ```
+/// use base_converter::{check_base, CheckBaseError};
+/// let err = check_base("0").unwrap_err(); // Base must have at least 2 characters
+/// assert_eq!(format!("{}", err), format!("{}", CheckBaseError::BaseLenTooShort("0".into())));
+/// ```
+pub fn check_base(base: &str) -> Result<()> {
+  ensure!(
+    base.chars().count() >= 2,
+    CheckBaseError::BaseLenTooShort(base.into())
+  );
   for c in base.chars() {
-    if base.chars().filter(|c2| &c == c2).count() > 1 {
-      return Err(Box::new(errs::DuplicateCharInBase {
-        base: String::from(base),
+    ensure!(
+      base.chars().filter(|c2| &c == c2).count() == 1,
+      CheckBaseError::DuplicateCharInBase {
+        base: base.into(),
         c,
-      }));
-    }
+      }
+    )
   }
   Ok(())
 }
 
-pub fn base_to_decimal(nbr: &str, from_base: &str) -> Result<usize, Box<dyn Error>> {
+/// Errors that can be returned when converting a number between bases.
+#[derive(Error, Debug)]
+pub enum ConversionError {
+  /// Error occurring when a char in a number is not found from the base it should be in.
+  #[error("char '{c}' not found in base '{base}'")]
+  CharNotFoundInBase { base: String, c: char },
+  /// Error occurring when a number encoded in a base cannot be represented in an [usize].
+  #[error("base '{base}' of length {base_length} ** {power} overflowed")]
+  ConversionOverflow {
+    base: String,
+    base_length: usize,
+    power: u32,
+  },
+}
+
+/// Converts a number from any base to an [usize].
+///
+/// # Errors
+/// - [CheckBaseError]
+/// - [ConversionError]
+///
+/// # Examples
+/// ```
+/// use base_converter::base_to_decimal;
+/// let nbr = base_to_decimal("101010", "01").unwrap();
+/// assert_eq!(nbr, 42);
+/// ```
+pub fn base_to_decimal(nbr: &str, from_base: &str) -> Result<usize> {
   check_base(from_base)?;
-  let baselen = from_base.len();
+  let base_length = from_base.chars().count();
   let mut result: usize = 0;
   for (c, i) in nbr.chars().zip((0..nbr.chars().count() as u32).rev()) {
     let x = from_base.chars().position(|x| x == c).ok_or_else(|| {
-      Box::new(errs::CharNotFoundInBase {
+      ConversionError::CharNotFoundInBase {
+        base: from_base.into(),
         c,
-        base: String::from(from_base),
-      })
+      }
     })?;
     result += x
-      * baselen
+      * base_length
         .checked_pow(i)
-        .ok_or_else(|| errs::ConversionOverflow {
-          base: String::from(from_base),
-          baselen,
+        .ok_or_else(|| ConversionError::ConversionOverflow {
+          base: from_base.into(),
+          base_length,
           power: i,
-        })? as usize;
+        })?;
   }
   Ok(result)
 }
 
-pub fn decimal_to_base(mut x: usize, to_base: &str) -> Result<String, Box<dyn Error>> {
+/// Converts an [usize] to another base.
+///
+/// # Errors
+/// - [CheckBaseError]
+///
+/// # Examples
+/// ```
+/// use base_converter::decimal_to_base;
+/// let nbr = decimal_to_base(51966, "0123456789ABCDEF").unwrap();
+/// assert_eq!(nbr, "CAFE");
+/// ```
+pub fn decimal_to_base(mut nbr: usize, to_base: &str) -> Result<String> {
   check_base(to_base)?;
-  if x == 0 {
-    return Ok(String::from("0"));
+  if nbr == 0 {
+    return Ok(to_base.chars().next().unwrap().into());
   }
-  let baselen = to_base.chars().count();
+  let base_length = to_base.chars().count();
   let mut result = String::new();
-  while x > 0 {
-    result.push(nbr_to_char(x % baselen, to_base)?);
-    x /= baselen;
+  while nbr > 0 {
+    result.push(to_base.chars().nth(nbr % base_length).unwrap());
+    nbr /= base_length;
   }
   Ok(result.chars().rev().collect())
 }
 
-fn nbr_to_char(nbr: usize, base: &str) -> Result<char, String> {
-  base.chars().nth(nbr).ok_or_else(|| {
-    format!(
-      "number {} should be inferior of base len: '{}'.chars().count() == {}",
-      nbr,
-      base,
-      base.chars().count()
-    )
-  })
-}
-
-pub fn base_to_base(x: &str, from_base: &str, to_base: &str) -> Result<String, Box<dyn Error>> {
-  let y = base_to_decimal(x, from_base)?;
-  let z = decimal_to_base(y, to_base)?;
-  Ok(z)
+/// Converts a number from any base to any other base.
+///
+/// # Errors
+/// - [CheckBaseError]
+/// - [ConversionError]
+///
+/// # Examples
+/// ```
+/// use base_converter::base_to_base;
+/// let nbr = base_to_base("🚀🚀🚀🦀🚀🦀🦀🚀🚀🦀🚀🚀🦀🦀🦀🚀🚀🦀🦀🦀🚀🦀🚀🦀🚀🚀🦀🦀🦀🦀🚀🚀🚀🚀🦀🚀🚀🦀🚀🚀🦀🦀🦀🚀🦀🦀🦀🦀", "🦀🚀", "abcdefghijklmnopqrstuvwxyz !🦀").unwrap();
+/// assert_eq!(nbr, "rust ftw 🦀")
+/// ```
+pub fn base_to_base(nbr: &str, from_base: &str, to_base: &str) -> Result<String> {
+  let nbr = base_to_decimal(nbr, from_base)?;
+  let nbr = decimal_to_base(nbr, to_base)?;
+  Ok(nbr)
 }
 
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn test_check_base() {
+    struct TestCase {
+      base: &'static str,
+      err: CheckBaseError,
+    }
+    let test_cases = vec![
+      TestCase {
+        base: "",
+        err: CheckBaseError::BaseLenTooShort("".into()),
+      },
+      TestCase {
+        base: "x",
+        err: CheckBaseError::BaseLenTooShort("x".into()),
+      },
+      TestCase {
+        base: "xx",
+        err: CheckBaseError::DuplicateCharInBase {
+          base: "xx".into(),
+          c: 'x',
+        },
+      },
+    ];
+    for test_case in &test_cases {
+      assert_eq!(
+        format!("{}", check_base(test_case.base).unwrap_err()),
+        format!("{}", test_case.err)
+      );
+    }
+  }
 
   #[test]
   fn test_base_to_decimal() {
@@ -91,5 +196,21 @@ mod tests {
   fn test_decimal_to_base() {
     assert_eq!("CAFE", decimal_to_base(51966, BASE16).unwrap());
     assert_eq!("0", decimal_to_base(0, BASE8).unwrap());
+    assert_eq!("x", decimal_to_base(0, "xyz").unwrap());
+  }
+
+  #[test]
+  fn test_base_to_base() {
+    let err = base_to_base("25", "01234", "1123").unwrap_err();
+    assert_eq!(
+      format!("{}", err),
+      format!(
+        "{}",
+        ConversionError::CharNotFoundInBase {
+          base: "01234".into(),
+          c: '5'
+        }
+      )
+    );
   }
 }

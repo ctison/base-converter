@@ -1,4 +1,5 @@
 {
-  "$schema": "https://github.com/SchemaStore/schemastore/raw/master/src/schemas/json/renovate.json",
-  "extends": ["github>ctison/renovate"]
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>ctison/config//renovate:renovate"],
+  "automerge": false
 }

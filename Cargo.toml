@@ -1,12 +1,12 @@
 [package]
-name = "base"
-version = "1.0.1"
+name = "base-converter"
+version = "0.0.0"
 authors = ["Charles Tison <ctison@pm.me>"]
-edition = "2018"
-
-[lib]
-name = "lib"
-path = "src/lib.rs"
+edition = "2021"
+repository = "https://github.com/ctison/base-converter-rs"
+description = "Convert a number in any base to any other base"
 
 [dependencies]
-clap = "=2.33.3"
+clap = { version = "4.0.19", features = ["derive"] }
+anyhow = "1.0.66"
+thiserror = "1.0.37"

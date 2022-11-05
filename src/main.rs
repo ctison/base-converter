@@ -1,21 +1,28 @@
-#[macro_use]
-extern crate clap;
-use lib::base_to_base;
+use base_converter::base_to_base;
+use clap::Parser;
+use std::process::ExitCode;
 
-fn main() {
-  let matches = clap_app!(base =>
-      (version: env!("CARGO_PKG_VERSION"))
-      (about: "Convert numbers from any base to any other base")
-      (@arg NUMBER: +required "Number to be converted from FROM_BASE to TO_BASE")
-      (@arg FROM_BASE: +required "Base in which NUMBER is converted from")
-      (@arg TO_BASE: +required "Base to which NUMBER is converted to")
-  )
-  .get_matches();
-  let number = matches.value_of("NUMBER").unwrap();
-  let from_base = matches.value_of("FROM_BASE").unwrap();
-  let to_base = matches.value_of("TO_BASE").unwrap();
-  match base_to_base(number, from_base, to_base) {
-    Ok(result) => println!("{}", result),
-    Err(err) => println!("Error: {}", err),
+#[derive(Parser)]
+#[command(author, version, about)]
+struct Cli {
+  /// Number in base FROM_BASE to convert in base TO_BASE
+  number: String,
+  /// Base to convert NUMBER from
+  from_base: String,
+  /// Base to convert NUMBER to
+  to_base: String,
+}
+
+fn main() -> ExitCode {
+  let cli = Cli::parse();
+  match base_to_base(&cli.number, &cli.from_base, &cli.to_base) {
+    Err(err) => {
+      eprintln!("Error: {err:#}");
+      ExitCode::FAILURE
+    }
+    Ok(result) => {
+      println!("{}", result);
+      ExitCode::SUCCESS
+    }
   }
 }
