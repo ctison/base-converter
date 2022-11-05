@@ -7,9 +7,17 @@ repository = "https://github.com/ctison/base-converter"
 description = "Convert a number in any base to any other base"
 license = "MIT"
 include = ["src/**/*.rs"]
-exclude = ["src/main.rs"]
+keywords = ["base", "conversion"]
+categories = ["algorithms", "command-line-utilities", "mathematics"]
+
+[[bin]]
+name = "base-converter"
+required-features = ["bin"]
 
 [dependencies]
-clap = { version = "4.0.19", features = ["derive"] }
+clap = { version = "4.0.19", features = ["derive"], optional = true }
 anyhow = "1.0.66"
 thiserror = "1.0.37"
+
+[features]
+bin = ["dep:clap"]
