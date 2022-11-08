@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: Compute package version
         id: version
-        run: echo "::set-output name=version::${GITHUB_REF##refs/tags/v}"
+        run: echo "version=${GITHUB_REF##refs/tags/v}" >> $GITHUB_OUTPUT
 
   build:
     runs-on: ubuntu-22.04
