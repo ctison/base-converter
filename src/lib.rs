@@ -1,5 +1,8 @@
 //! Convert numbers from base to base.
 
+#[cfg(feature = "wasm")]
+pub mod wasm;
+
 use anyhow::{ensure, Result};
 use thiserror::Error;
 

@@ -8,7 +8,10 @@ description = "Convert a number in any base to any other base"
 license = "MIT"
 include = ["src/**/*.rs"]
 keywords = ["base", "conversion"]
-categories = ["algorithms", "command-line-utilities", "mathematics"]
+categories = ["algorithms", "command-line-utilities", "mathematics", "wasm"]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
 
 [[bin]]
 name = "base-converter"
@@ -18,6 +21,8 @@ required-features = ["bin"]
 clap = { version = "4.0.19", features = ["derive"], optional = true }
 anyhow = "1.0.66"
 thiserror = "1.0.37"
+wasm-bindgen = { version = "0.2.83", optional = true }
 
 [features]
 bin = ["dep:clap"]
+wasm = ["dep:wasm-bindgen"]

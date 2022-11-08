@@ -3,5 +3,6 @@
   "editor.tabSize": 2,
   "files.eol": "\n",
   "files.insertFinalNewline": true,
-  "cSpell.words": ["automerge", "renovatebot", "thiserror"]
+  "cSpell.words": ["aarch", "automerge", "bindgen", "renovatebot", "thiserror"],
+  "rust-analyzer.cargo.features": ["bin", "wasm"]
 }
