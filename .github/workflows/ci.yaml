@@ -49,11 +49,11 @@ jobs:
 
       - name: Build cross platforms
         run: |
-          cross build --release --locked --target aarch64-unknown-linux-gnu
-          cross build --release --locked --target aarch64-unknown-linux-musl
-          cross build --release --locked --target x86_64-unknown-linux-gnu
-          cross build --release --locked --target x86_64-unknown-linux-musl
-          cross build --release --locked --target x86_64-pc-windows-gnu
+          cross build --release --locked --target aarch64-unknown-linux-gnu -F bin
+          cross build --release --locked --target aarch64-unknown-linux-musl -F bin
+          cross build --release --locked --target x86_64-unknown-linux-gnu -F bin
+          cross build --release --locked --target x86_64-unknown-linux-musl -F bin
+          cross build --release --locked --target x86_64-pc-windows-gnu -F bin
 
           mkdir tmp/
           mv ./target/aarch64-unknown-linux-gnu/release/base-converter ./tmp/base-converter-aarch64-unknown-linux-gnu
