@@ -49,18 +49,18 @@ jobs:
 
       - name: Build cross platforms
         run: |
-          cross build --release --locked --target aarch64-unknown-linux-gnu -F bin
-          cross build --release --locked --target aarch64-unknown-linux-musl -F bin
-          cross build --release --locked --target x86_64-unknown-linux-gnu -F bin
-          cross build --release --locked --target x86_64-unknown-linux-musl -F bin
-          cross build --release --locked --target x86_64-pc-windows-gnu -F bin
+          cross build --release --locked --target aarch64-unknown-linux-gnu --bin base-converter -F bin
+          cross build --release --locked --target aarch64-unknown-linux-musl --bin base-converter -F bin
+          cross build --release --locked --target x86_64-unknown-linux-gnu --bin base-converter -F bin
+          cross build --release --locked --target x86_64-unknown-linux-musl --bin base-converter -F bin
+          cross build --release --locked --target x86_64-pc-windows-gnu --bin base-converter -F bin
 
           mkdir tmp/
           mv ./target/aarch64-unknown-linux-gnu/release/base-converter ./tmp/base-converter-aarch64-unknown-linux-gnu
           mv ./target/aarch64-unknown-linux-musl/release/base-converter ./tmp/base-converter-aarch64-unknown-linux-musl
           mv ./target/x86_64-unknown-linux-gnu/release/base-converter ./tmp/base-converter-x86_64-unknown-linux-gnu
           mv ./target/x86_64-unknown-linux-musl/release/base-converter ./tmp/base-converter-x86_64-unknown-linux-musl
-          mv ./target/x86_64-pc-windows-gnu/release/base-converter ./tmp/base-converter-x86_64-pc-windows-gnu
+          mv ./target/x86_64-pc-windows-gnu/release/base-converter.exe ./tmp/base-converter-x86_64-pc-windows-gnu.exe
 
       # - name: Install wasm-pack
       #   run: curl -fL --tlsv1.2 --proto '=https' https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
@@ -89,7 +89,7 @@ jobs:
             ./tmp/base-converter-aarch64-unknown-linux-musl
             ./tmp/base-converter-x86_64-unknown-linux-gnu
             ./tmp/base-converter-x86_64-unknown-linux-musl
-            ./tmp/base-converter-x86_64-pc-windows-gnu
+            ./tmp/base-converter-x86_64-pc-windows-gnu.exe
           body: |
             # Rust Doc
             https://docs.rs/base-converter/${{ steps.version.outputs.version }}/base_converter/
