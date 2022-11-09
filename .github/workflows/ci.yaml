@@ -92,6 +92,6 @@ jobs:
             ./tmp/base-converter-x86_64-pc-windows-gnu.exe
           body: |
             # Rust Doc
-            https://docs.rs/base-converter/${{ steps.version.outputs.version }}/base_converter/
+            https://docs.rs/base-converter/${{ needs.version.outputs.version }}/base_converter/
           # ## NPM Package
-          # https://www.npmjs.com/package/base-converter/v/${{ steps.version.outputs.version }}
+          # https://www.npmjs.com/package/base-converter/v/${{ needs.version.outputs.version }}
