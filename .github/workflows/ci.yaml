@@ -16,7 +16,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Test
         run: cargo test -F bin,wasm
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs: version
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Override version
         run: sed -i 's/^version = ".+"$/version = "${{ needs.version.outputs.version }}"/' Cargo.toml
