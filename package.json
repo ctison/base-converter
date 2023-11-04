@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "devDependencies": {
+    "wasm-pack": "0.12.1"
+  }
+}
