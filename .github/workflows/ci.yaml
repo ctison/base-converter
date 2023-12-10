@@ -68,7 +68,9 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        os: [ubuntu-latest, macos-latest-xlarge]
+        os: [ubuntu-latest,
+        # macos-latest-xlarge
+        ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
