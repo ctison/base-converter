@@ -64,7 +64,7 @@ jobs:
           mv ./target/aarch64-unknown-linux-musl/release/base-converter ./tmp/base-converter-aarch64-unknown-linux-musl
           mv ./target/x86_64-unknown-linux-gnu/release/base-converter ./tmp/base-converter-x86_64-unknown-linux-gnu
           mv ./target/x86_64-unknown-linux-musl/release/base-converter ./tmp/base-converter-x86_64-unknown-linux-musl
-          mv ./target/x86_64-pc-windows-gnu/release/base-converter ./tmp/base-converter-x86_64-pc-windows-gnu
+          mv ./target/x86_64-pc-windows-gnu/release/base-converter.exe ./tmp/base-converter-x86_64-pc-windows-gnu.exe
 
       - name: Build wasm
         run: bun run build
@@ -93,7 +93,7 @@ jobs:
             ./tmp/base-converter-aarch64-unknown-linux-musl
             ./tmp/base-converter-x86_64-unknown-linux-gnu
             ./tmp/base-converter-x86_64-unknown-linux-musl
-            ./tmp/base-converter-x86_64-pc-windows-gnu
+            ./tmp/base-converter-x86_64-pc-windows-gnu.exe
           body: |
             # Rust Doc
             https://docs.rs/base-converter/${{ steps.version.outputs.version }}/base_converter/
