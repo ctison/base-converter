@@ -1,6 +1,7 @@
 //! Convert numbers from base to base.
 
 #[cfg(feature = "wasm")]
+#[allow(non_snake_case)]
 pub mod wasm;
 
 use anyhow::{ensure, Result};
