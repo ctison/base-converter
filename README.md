@@ -8,6 +8,8 @@ Pre-built binaries are available in [Releases](https://github.com/ctison/base-co
 
 NPM package (wasm) available at https://www.npmjs.com/package/@ctison/base-converter.
 
+Rust doc available at https://docs.rs/base-converter/latest/base_converter/.
+
 ## CLI Usage
 
 ```sh

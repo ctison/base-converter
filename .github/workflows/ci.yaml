@@ -62,18 +62,13 @@ jobs:
           if-no-files-found: error
           name: base-converter-wasm
           path: pkg/
-      - uses: actions/upload-artifact@v3
-        with:
-          if-no-files-found: error
-          name: base-converter-wasm-wild
-          path: pkg/*
 
   build:
     needs: version
     strategy:
       max-parallel: 1
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest-xlarge]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -89,7 +84,14 @@ jobs:
       - name: Install cross
         run: cargo install cross --git https://github.com/cross-rs/cross
       - name: Override version
-        run: sed -i 's/^version = ".+"$/version = "${{ needs.version.outputs.version }}"/' Cargo.toml
+        run: |
+          echo '${{ runner.os }}'
+          if "$(uname -s)" = "Darwin"; then
+            SED="sed -i ''"
+          else
+            SED="sed -i"
+          fi
+          $SED 's/^version = ".+"$/version = "${{ needs.version.outputs.version }}"/' Cargo.toml
       - name: Build cross platforms
         if: matrix.os == 'ubuntu-latest'
         run: |
@@ -105,48 +107,45 @@ jobs:
           mv ./target/x86_64-unknown-linux-musl/release/base-converter ./tmp/base-converter-x86_64-unknown-linux-musl
           mv ./target/x86_64-pc-windows-gnu/release/base-converter.exe ./tmp/base-converter-x86_64-pc-windows-gnu.exe
       - name: Build macos
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'macos-latest-xlarge'
         run: |
           cargo build --release --locked --bin base-converter -F bin
           mkdir tmp/
-          mv ./target/release/base-converter ./tmp/base-converter-x86_64-apple-darwin
+          mv ./target/aarch64-apple-darwin/release/base-converter ./tmp/base-converter-aarch64-apple-darwin
       - uses: actions/upload-artifact@v3
         with:
           if-no-files-found: error
-          name: base-converter-${{ matrix.os }}
+          name: cli-${{ matrix.os }}
           path: tmp/
 
   release:
     runs-on: ubuntu-latest
-    needs: [build-wasm, build]
+    needs: [version, build-wasm, build]
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           path: dist/
-      - run: |
-          ls -lRa dist/
-      # - name: Publish on npmjs.com
-      #   working-directory: dist/pkg/
-      #   env:
-      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      #   run: npm publish
-      # - name: Publish on crates.io
-      #   env:
-      #     CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-      #   run: cargo publish --allow-dirty --locked
-      # - name: Github Release
-      #   uses: softprops/action-gh-release@v1
-      #   with:
-      #     generate_release_notes: true
-      #     fail_on_unmatched_files: true
-      #     files: |
-      #       ./tmp/base-converter-aarch64-unknown-linux-gnu
-      #       ./tmp/base-converter-aarch64-unknown-linux-musl
-      #       ./tmp/base-converter-x86_64-unknown-linux-gnu
-      #       ./tmp/base-converter-x86_64-unknown-linux-musl
-      #       ./tmp/base-converter-x86_64-pc-windows-gnu.exe
-      #     body: |
-      #       # Rust Doc
-      #       https://docs.rs/base-converter/${{ steps.version.outputs.version }}/base_converter/
-      #       # NPM Package
-      #       https://www.npmjs.com/package/@ctison/base-converter/v/${{ steps.version.outputs.version }}
+      - name: Publish on npmjs.com
+        working-directory: dist/base-converter-wasm
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish
+      - name: Publish on crates.io
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: |
+          sed -i 's/^version = ".+"$/version = "${{ needs.version.outputs.version }}"/' Cargo.toml
+          cargo publish --allow-dirty --locked
+      - name: Github Release
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: |
+            ./dist/cli-*/*
+          body: |
+            # Rust Doc
+            https://docs.rs/base-converter/${{ needs.version.outputs.version }}/base_converter/
+            # NPM Package
+            https://www.npmjs.com/package/@ctison/base-converter/v/${{ needs.version.outputs.version }}
