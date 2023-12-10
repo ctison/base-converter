@@ -41,7 +41,7 @@ jobs:
       - name: Compute package version
         id: version
         # run: echo "version=${GITHUB_REF##refs/tags/v}" >> $GITHUB_OUTPUT
-        run: echo "version=2.0.0-beta.4" >> $GITHUB_OUTPUT
+        run: echo "version=2.0.0-beta.5" >> $GITHUB_OUTPUT
 
   build-wasm:
     runs-on: ubuntu-latest
