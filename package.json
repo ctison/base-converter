@@ -1,5 +1,8 @@
 {
   "private": true,
+  "scripts": {
+    "build": "wasm-pack build --scope ctison --release . -F wasm"
+  },
   "devDependencies": {
     "wasm-pack": "0.12.1"
   }

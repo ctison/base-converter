@@ -1,9 +1,19 @@
 use base_converter::base_to_base;
-use clap::Parser;
+use clap::{builder::styling::AnsiColor, Parser};
 use std::process::ExitCode;
 
 #[derive(Parser)]
-#[command(author, version, about)]
+#[command(
+  author,
+  version,
+  about,
+  arg_required_else_help(true),
+  styles(clap::builder::Styles::styled()
+  .header(AnsiColor::Green.on_default())
+  .usage(AnsiColor::Green.on_default())
+  .literal(AnsiColor::Cyan.on_default())
+  .placeholder(AnsiColor::Blue.bright(true).on_default()))
+)]
 struct Cli {
   /// Number in base FROM_BASE to convert in base TO_BASE
   number: String,
