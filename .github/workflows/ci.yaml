@@ -56,7 +56,7 @@ jobs:
           cd pkg/
           cp ../.npmrc .
           npm version --no-git-tag-version '${{ needs.version.outputs.version }}'
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           name: base-converter-wasm
@@ -112,7 +112,7 @@ jobs:
           cargo build --release --locked --bin base-converter -F bin
           mkdir tmp/
           mv ./target/aarch64-apple-darwin/release/base-converter ./tmp/base-converter-aarch64-apple-darwin
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           name: cli-${{ matrix.os }}
