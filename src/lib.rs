@@ -4,6 +4,9 @@
 #[allow(non_snake_case)]
 pub mod wasm;
 
+#[cfg(feature = "python")]
+pub mod python;
+
 use anyhow::{ensure, Result};
 use thiserror::Error;
 

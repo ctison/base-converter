@@ -3,6 +3,14 @@
   "editor.tabSize": 2,
   "files.eol": "\n",
   "files.insertFinalNewline": true,
-  "cSpell.words": ["aarch", "automerge", "bindgen", "renovatebot", "thiserror"],
-  "rust-analyzer.cargo.features": ["bin", "wasm"]
+  "cSpell.words": [
+    "aarch",
+    "automerge",
+    "bindgen",
+    "pyfunction",
+    "pymodule",
+    "renovatebot",
+    "thiserror"
+  ],
+  "rust-analyzer.cargo.features": ["bin", "wasm", "python"]
 }
