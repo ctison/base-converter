@@ -53,7 +53,7 @@ export function baseToDecimal(nbr: string, fromBase: string): number
  * @param {string} toBase
  * @returns {string}
  */
-export function decimal_to_base(nbr: number, toBase: string): string
+export function decimalToBase(nbr: number, toBase: string): string
 /**
  * Convert a number from any base to any base.
  * @param {string} nbr

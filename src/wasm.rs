@@ -14,7 +14,7 @@ pub fn baseToDecimal(nbr: &str, fromBase: &str) -> Result<usize, JsError> {
 
 /// Convert an decimal number to any base.
 #[wasm_bindgen]
-pub fn decimal_to_base(nbr: usize, toBase: &str) -> Result<String, JsError> {
+pub fn decimalToBase(nbr: usize, toBase: &str) -> Result<String, JsError> {
   crate::decimal_to_base(nbr, toBase).map_err(|err| JsError::new(&format!("{}", err)))
 }
 
