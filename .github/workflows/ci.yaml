@@ -47,7 +47,7 @@ jobs:
     needs: version
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
+      - uses: oven-sh/setup-bun@v2
       - name: Install npm packages
         run: bun install --frozen-lockfile
       - name: Build wasm
