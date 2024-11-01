@@ -4,6 +4,6 @@
     "build": "wasm-pack build --scope ctison --release . -F wasm"
   },
   "devDependencies": {
-    "wasm-pack": "0.13.0"
+    "wasm-pack": "0.13.1"
   }
 }
